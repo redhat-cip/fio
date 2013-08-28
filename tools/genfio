@@ -34,6 +34,7 @@ CACHED_IO="FALSE"
 PREFIX=""
 PREFIX_FILENAME=""
 IODEPTH=1
+JOB_NUMBERS=0
 
 show_help() {
 	PROG=$(basename $0)
@@ -142,6 +143,7 @@ write_bw_log=${PREFIX_FILENAME}$SHORT_HOSTNAME-$BLK_SIZE-$PRINTABLE_DISK-$TYPE-s
 write_iops_log=${PREFIX_FILENAME}$SHORT_HOSTNAME-$BLK_SIZE-$PRINTABLE_DISK-$TYPE-seq.results
 EOF
 ETA=$(($ETA + $RUNTIME))
+JOB_NUMBERS=$(($JOB_NUMBERS + 1))
 }
 
 gen_seq_fio() {
@@ -177,6 +179,7 @@ write_iops_log=${PREFIX_FILENAME}$SHORT_HOSTNAME-$BLK_SIZE-$PRINTABLE_DISK-$TYPE
 EOF
 done
 
+JOB_NUMBERS=$(($JOB_NUMBERS + 1))
 ETA=$(($ETA + $RUNTIME))
 echo >> $OUTFILE
 }
@@ -340,6 +343,9 @@ echo >> $OUTFILE
 for BLK_SIZE in $(echo $BLOCK_SIZE | tr "," " "); do
 	gen_fio
 done
+
+echo "$JOB_NUMBERS jobs generated"
+
 ETA_H=$(($ETA / 3600))
 ETA_M=$((($ETA - ($ETA_H*3600)) / 60))
 if [ "$ETA" = "0" ]; then
